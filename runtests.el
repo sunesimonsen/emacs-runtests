@@ -27,7 +27,6 @@
     (setq output
           (replace-regexp-in-string "\033\\[\\(38\\|48\\);5;[0-9]+m" ""
                                     (shell-command-to-string command)))
-    (message output)
     (when (get-buffer "*runtests*")
       (kill-buffer "*runtests*"))
     (if (string-match "failing" output)
