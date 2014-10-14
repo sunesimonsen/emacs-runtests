@@ -23,13 +23,13 @@
   "Runs all the tests in the current buffer"
   (interactive)
   (let* (command result)
-    (setq command (concat "runtests " (buffer-name)))
+    (setq command (concat "runtests " (buffer-file-name)))
     (setq output
           (replace-regexp-in-string "\033\\[\\(38\\|48\\);5;[0-9]+m" ""
                                     (shell-command-to-string command)))
     (when (get-buffer "*runtests*")
       (kill-buffer "*runtests*"))
-    (if (string-match "failing" output)
+    (if (string-match "Error:" output)
         (progn
           (runtests--color-modeline "Red")
           (with-current-buffer (get-buffer-create "*runtests*")
