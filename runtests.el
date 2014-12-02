@@ -19,34 +19,43 @@
 
 (require 'ansi-color)
 
-(defun runtests ()
-  "Runs all the tests in the current buffer"
-  (interactive)
-  (let* (command result)
-    (setq command (concat "runtests " (buffer-file-name)))
-    (setq output
-          (replace-regexp-in-string "\033\\[\\(38\\|48\\);5;[0-9]+m" ""
-                                    (shell-command-to-string command)))
-    (when (get-buffer "*runtests*")
-      (kill-buffer "*runtests*"))
-    (if (string-match "Error:" output)
-        (progn
-          (runtests--color-modeline "Red")
-          (with-current-buffer (get-buffer-create "*runtests*")
-            (insert output)
-            (runtests--color-buffer))
-          (switch-to-buffer "*runtests*"))
-      (runtests--color-modeline "Green"))))
+(setq runtests--mode-line-color (face-background 'mode-line))
 
 (defun runtests--color-modeline (color)
   "Colors the modeline, green success red failure"
-  (run-at-time "1 sec" nil 'runtests--reset-color-modeline (face-background 'mode-line))
+  (run-at-time "1 sec" nil 'set-face-background 'mode-line runtests--mode-line-color)
   (set-face-background 'mode-line color))
 
-(defun runtests--reset-color-modeline (color)
-  (set-face-background 'mode-line color))
+(defun runtests-ansi-color-filter (process output)
+  (when (buffer-live-p (process-buffer process))
+    (with-current-buffer (process-buffer process)
+      (let ((moving (= (point) (process-mark process))))
+        (save-excursion
+          ;; Insert the text, advancing the process marker.
+          (goto-char (process-mark process))
+          (insert (replace-regexp-in-string "\033\\[\\(38\\|48\\);5;[0-9]+m" "" output))
+          (ansi-color-apply-on-region (process-mark process) (point))
+          (set-marker (process-mark process) (point)))
+        (if moving (goto-char (process-mark process)))))))
 
-(defun runtests--color-buffer ()
-  (ansi-color-apply-on-region (point-min) (point-max)))
+(defun runtests-sentinel (process-name event)
+  (let ((buffer (process-buffer (get-process process-name))))
+    (cond ((string= "finished\n" event)
+           (when buffer (kill-buffer buffer))
+           (runtests--color-modeline "Green"))
+          (t
+           (when buffer
+             (switch-to-buffer buffer)
+             (read-only-mode 't)
+             (runtests--color-modeline "Red"))))))
+
+(defun runtests ()
+  "Runs all the tests in the current buffer"
+  (interactive)
+  (when (get-buffer "*runtests*")
+    (kill-buffer "*runtests*"))
+  (let ((process (start-process "runtests-process" "*runtests*" "runtests" (buffer-file-name))))
+    (set-process-filter process 'runtests-ansi-color-filter)
+    (set-process-sentinel process 'runtests-sentinel)))
 
 (provide 'runtests)

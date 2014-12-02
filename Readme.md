@@ -1,7 +1,7 @@
 Under construction
 
 This Emacs extension will run an external script called runtests that should be in your path.
-If the output contains the word failing it will show the output in a buffer.
+If the script fails the output of the script will be shown.
 
 Example runtests script
 
