@@ -47,6 +47,9 @@
            (when buffer
              (switch-to-buffer buffer)
              (read-only-mode 't)
+             (goto-char (point-min))
+             (compilation-mode)
+             (compilation-next-error 1)
              (runtests--color-modeline "Red"))))))
 
 (defun runtests ()
