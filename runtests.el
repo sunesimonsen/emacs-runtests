@@ -1,4 +1,4 @@
-;;; emacs-runtests.el --- Run unit tests from Emacs
+;;; runtests.el --- Run unit tests from Emacs
 ;;
 ;; Copyright 2014 Sune Simonsen
 ;;
@@ -19,7 +19,7 @@
 
 (require 'ansi-color)
 
-(setq runtests--mode-line-color (face-background 'mode-line))
+(defvar runtests--mode-line-color (face-background 'mode-line))
 
 (defun runtests--color-modeline (color)
   "Colors the modeline, green success red failure"
@@ -52,6 +52,7 @@
              (compilation-next-error 1)
              (runtests--color-modeline "Red"))))))
 
+;;;###autoload
 (defun runtests ()
   "Runs all the tests in the current buffer"
   (interactive)
@@ -62,3 +63,4 @@
     (set-process-sentinel process 'runtests-sentinel)))
 
 (provide 'runtests)
+;;; runtests.el ends here
