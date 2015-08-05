@@ -1,7 +1,5 @@
-Under construction
-
 This Emacs extension will run an external script called runtests that should be in your path.
-If the script fails the output of the script will be shown.
+If the script fails the output of the script will be shown with ansi colors.
 
 Example runtests script
 
