@@ -1,4 +1,4 @@
-;;; emacs-runtests.el --- Run unit tests from Emacs
+;;; runtests.el --- Run unit tests from Emacs
 ;;
 ;; Copyright 2014 Sune Simonsen
 ;;
@@ -62,3 +62,4 @@
     (set-process-sentinel process 'runtests-sentinel)))
 
 (provide 'runtests)
+;;; runtests.el ends here
