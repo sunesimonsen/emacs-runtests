@@ -19,7 +19,7 @@
 
 (require 'ansi-color)
 
-(setq runtests--mode-line-color (face-background 'mode-line))
+(defvar runtests--mode-line-color (face-background 'mode-line))
 
 (defun runtests--color-modeline (color)
   "Colors the modeline, green success red failure"
