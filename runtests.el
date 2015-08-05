@@ -52,6 +52,7 @@
              (compilation-next-error 1)
              (runtests--color-modeline "Red"))))))
 
+;;;###autoload
 (defun runtests ()
   "Runs all the tests in the current buffer"
   (interactive)
