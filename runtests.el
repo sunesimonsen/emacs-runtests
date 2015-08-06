@@ -19,6 +19,15 @@
 
 (require 'ansi-color)
 
+(defgroup runtests nil
+  "Emacs extension that will run an external script called.
+If the script fails the output of the script will be shown with ansi colors.")
+
+(defcustom runtests-command "runtests"
+  "The shell command that will be executed when calling runtests"
+  :group 'runtests
+  :type '(string :tag "command"))
+
 (defvar runtests--mode-line-color (face-background 'mode-line))
 
 (defun runtests--color-modeline (color)
@@ -51,15 +60,6 @@
              (compilation-mode)
              (compilation-next-error 1)
              (runtests--color-modeline "Red"))))))
-
-(defgroup runtests nil
-  "Emacs extension that will run an external script called.
-If the script fails the output of the script will be shown with ansi colors.")
-
-(defcustom runtests-command "runtests"
-  "The shell command that will be executed when calling runtests"
-  :group 'runtests
-  :type '(string :tag "command"))
 
 ;;;###autoload
 (defun runtests ()
