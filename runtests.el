@@ -28,12 +28,11 @@ If the script fails the output of the script will be shown with ansi colors.")
   :group 'runtests
   :type '(string :tag "command"))
 
-(defvar runtests--mode-line-color (face-background 'mode-line))
+(defun runtests-notify-error ()
+  (message (propertize "Tests failed" 'face '(:foreground "red" :weight extra-bold))))
 
-(defun runtests--color-modeline (color)
-  "Colors the modeline, green success red failure"
-  (run-at-time "1 sec" nil 'set-face-background 'mode-line runtests--mode-line-color)
-  (set-face-background 'mode-line color))
+(defun runtests-notify-success ()
+  (message (propertize "Tests passed" 'face '(:foreground "green" :weight extra-bold))))
 
 (defun runtests-ansi-color-filter (process output)
   (when (buffer-live-p (process-buffer process))
@@ -51,7 +50,7 @@ If the script fails the output of the script will be shown with ansi colors.")
   (let ((buffer (process-buffer (get-process process-name))))
     (cond ((string= "finished\n" event)
            (when buffer (kill-buffer buffer))
-           (runtests--color-modeline "Green"))
+           (runtests-notify-success))
           (t
            (when buffer
              (switch-to-buffer buffer)
@@ -59,7 +58,7 @@ If the script fails the output of the script will be shown with ansi colors.")
              (goto-char (point-min))
              (compilation-mode)
              (compilation-next-error 1)
-             (runtests--color-modeline "Red"))))))
+             (runtests-notify-error))))))
 
 ;;;###autoload
 (defun runtests ()
