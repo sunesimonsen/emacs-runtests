@@ -31,10 +31,10 @@ If the script fails the output of the script will be shown with ansi colors.")
   :type '(string :tag "command"))
 
 (defun runtests-notify-error ()
-  (message (propertize "Tests failed" 'face '(:foreground "red" :weight extra-bold))))
+  (message (propertize "Tests failed" 'face 'error)))
 
 (defun runtests-notify-success ()
-  (message (propertize "Tests passed" 'face '(:foreground "green" :weight extra-bold))))
+  (message (propertize "Tests passed" 'face 'success)))
 
 (defun runtests-ansi-color-filter (process output)
   (when (buffer-live-p (process-buffer process))
