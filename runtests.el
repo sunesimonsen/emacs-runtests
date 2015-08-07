@@ -30,11 +30,21 @@ If the script fails the output of the script will be shown with ansi colors.")
   :group 'runtests
   :type '(string :tag "command"))
 
+(defface runtests-minibuffer-error
+  '((t (:inherit error)))
+  "Face of message that will be shown when a test fails"
+  :group 'runtests)
+
+(defface runtests-minibuffer-success
+  '((t (:inherit success)))
+  "Face of message that will be shown when a test passes"
+  :group 'runtests)
+
 (defun runtests-notify-error ()
-  (message (propertize "Tests failed" 'face '(:foreground "red" :weight extra-bold))))
+  (message (propertize "Tests failed" 'face 'runtests-minibuffer-error)))
 
 (defun runtests-notify-success ()
-  (message (propertize "Tests passed" 'face '(:foreground "green" :weight extra-bold))))
+  (message (propertize "Tests passed" 'face 'runtests-minibuffer-success)))
 
 (defun runtests-ansi-color-filter (process output)
   (when (buffer-live-p (process-buffer process))
